@@ -21,4 +21,5 @@ Concluido
 - ``VSCODE``
 
 ## 📁 Acesso ao projeto
-Você pode acessar os arquivos do projeto clicando [aqui]((https://github.com/LeonardoKowacic/Desafio-Alura-Store)).
+Você pode acessar os arquivos do projeto clicando [aqui](https://github.com/LeonardoKowacic/Desafio-Alura-Store/).
+                                               
