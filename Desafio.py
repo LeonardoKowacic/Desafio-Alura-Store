@@ -1,7 +1,10 @@
 import pandas as pd 
 import matplotlib.pyplot as plt
+import folium
+from folium.plugins import HeatMap
 
 #faturamento, items mais vendidos, avaliacoes clientes, categorias mais vendidas e frete medio
+
 
 url = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_1.csv"
 url2 = "https://raw.githubusercontent.com/alura-es-cursos/challenge1-data-science/refs/heads/main/base-de-dados-challenge-1/loja_2.csv"
@@ -13,7 +16,7 @@ loja2 = pd.read_csv(url2)
 loja3 = pd.read_csv(url3)
 loja4 = pd.read_csv(url4)
 
-#print(loja.head());
+print(loja.head());
 
 def faturamento(lojas):
     lojas;
@@ -25,7 +28,6 @@ def qtd_produtos_categorias(lojas):
  resultado = lojas.groupby('Categoria do Produto')['Produto'].count().sort_values()
  return resultado 
 
-print(qtd_produtos_categorias(loja))
 #qtd categorias por produto = loja.groupby('Produto')['Categoria do Produto'].nunique().sort_values()
 
 def avalia_cliente(lojas):  
@@ -140,8 +142,71 @@ def dashboard_loja(lojas):
     plt.show()
 
 
-dashboard_loja(loja);
-dashboard_loja(loja2);
-dashboard_loja(loja3);
-dashboard_loja(loja4);
+def mapa_geografico_folium(lojas, nome="Loja"):
+    # Remove possíveis coordenadas ausentes
+    lojas = lojas.dropna(subset=["lat", "lon"])
+    
+    # Centro do mapa definido pela média das coordenadas
+    centro = [lojas["lat"].mean(), lojas["lon"].mean()]
 
+    # Criar mapa base
+    mapa = folium.Map(location=centro, zoom_start=5)
+
+    # Criar heatmap com Folium
+    heatmap_data = lojas[["lat", "lon"]].values.tolist()
+
+    HeatMap(
+        heatmap_data,
+        radius=12,
+        blur=15,
+        max_zoom=1
+    ).add_to(mapa)
+
+    # Salvar arquivo no Colab
+    file_path = f"mapa_{nome}.html"
+    mapa.save(file_path)
+
+    print(f"Mapa gerado e salvo em: {file_path}")
+    return mapa
+
+mapa_geografico_folium(loja, "Loja1")
+mapa_geografico_folium(loja2, "Loja2")
+mapa_geografico_folium(loja3, "Loja3")
+mapa_geografico_folium(loja4, "Loja4")
+#def grafico_dispersao_localizacao(lojas, nome):
+#    plt.figure(figsize=(8,6))
+#    plt.scatter(lojas['lon'], lojas['lat'], alpha=0.5)
+#    plt.title(f"Distribuição Geográfica das Vendas - {nome}")
+#    plt.xlabel("Longitude")
+#    plt.ylabel("Latitude")
+#    plt.grid(True)
+#    plt.show()
+#
+#def heatmap_geografico(lojas, nome):
+#    plt.figure(figsize=(8,6))
+#    sns.kdeplot(
+#        x=lojas['lon'], 
+#        y=lojas['lat'], 
+#        fill=True, 
+#        cmap="Reds",
+#        thresh=0.2
+#    )
+#    plt.title(f"Heatmap Geográfico de Vendas - {nome}")
+#    plt.xlabel("Longitude")
+#    plt.ylabel("Latitude")
+#    plt.show()
+#
+#heatmap_geografico(loja, "Loja 1")
+##grafico_dispersao_localizacao(loja, "Loja 1")
+##grafico_dispersao_localizacao(loja2, "Loja 2")
+##grafico_dispersao_localizacao(loja3, "Loja 3")
+##grafico_dispersao_localizacao(loja4, "Loja 4")
+
+
+#
+##dashboard_loja(loja);
+##dashboard_loja(loja2);
+##dashboard_loja(loja3);
+##dashboard_loja(loja4);
+#
+#
